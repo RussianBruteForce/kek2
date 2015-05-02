@@ -2,6 +2,7 @@
 #include <QString>
 #include <QFile>
 #include <QTextStream>
+#include <QTime>
 #include <vector>
 #include <locale>
 #include <functional>
@@ -80,11 +81,16 @@ int main()
 		return s.trimmed();
 	};
 
+
+	auto start = QTime::currentTime();
+	qDebug() << "Opening file..." << start;
 	QFile textfile("w2");
 	textfile.open(QIODevice::ReadOnly | QIODevice::Text);
 	QTextStream text(&textfile);
 
 	QString word;
+
+	qDebug() << "Loading file to map..." <<  QTime::currentTime().msecsTo(start);
 	do {
 		text >> word;
 		word = trim(word.toLower());
@@ -95,6 +101,8 @@ int main()
 	} while (!text.atEnd());
 	textfile.close();
 
+
+	qDebug() << "To BTS" <<  QTime::currentTime().msecsTo(start);
 	for (auto& x: m) {
 //		qDebug() << " [" << x.first <<
 //		        ':' << x.second->word <<
@@ -103,18 +111,23 @@ int main()
 		bts.add(d);
 	}
 
-	bts.traverse([](BtsData d){
-		qDebug() << d.word << d.count << d.depth;
-	});
+	//bts.traverse([](BtsData d){
+	//	qDebug() << d.word << d.count << d.depth;
+	//});
 
-	auto find = [&bts] (QString s) {
-		bts.traverse([&s](BtsData d){
-			if (d.word == s)
+	auto find = [&bts, &start] (QString s) {
+		qDebug() << "finding..." << QTime::currentTime().msecsTo(start);
+		bts.traverse([&s, &start](BtsData d){
+			if (d.word == s) {
+				qDebug() << "finded" <<  QTime::currentTime().msecsTo(start);
 				qDebug() << d.word << d.count << d.depth;
+
+			}
 		});
 	};
 
 	find("мама");
+	qDebug() << "FINISH" <<  QTime::currentTime().msecsTo(start);
 
 	return 0;
 }
