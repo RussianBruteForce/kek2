@@ -137,6 +137,7 @@ int main()
 
 	find(wordToFind);
 	qDebug() << "FINISH" <<  QTime::currentTime().msecsTo(start);
+	bts.add({"sdf", 0, 0});
 
 	return 0;
 }

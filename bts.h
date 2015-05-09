@@ -10,7 +10,7 @@ class Bts {
 public:
 	struct Node {
 		T data;
-		Node *left, *right;
+		Node *left{nullptr}, *right{nullptr};
 		~Node() {
 			if (left)
 				delete left;
@@ -37,7 +37,6 @@ private:
 		if (n == nullptr) {
 			n = new Node;
 			n->data = data;
-			n->left = n->right = nullptr;
 		} else if (n->data < data) {
 			data.deep();
 			add(data, n->left);
@@ -48,9 +47,8 @@ private:
 	}
 	void add(T&& data, Node *&n) {
 		if (n == nullptr) {
-			n = new Node;
+			n = new Node{};
 			n->data = std::move(data);
-			n->left = n->right = nullptr;
 		} else if (n->data < data) {
 			data.deep();
 			add(std::move(data), n->left);
