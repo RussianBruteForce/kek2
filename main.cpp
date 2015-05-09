@@ -7,6 +7,7 @@
 #include <locale>
 #include <functional>
 #include <map>
+#include <memory>
 #include "bts.h"
 
 using namespace std;
@@ -30,7 +31,7 @@ int main()
 
 	Bts<BtsData> bts; // дерево поиска
 	std::hash<string> str_hash; // функция хеширования слова
-	map<size_t, BtsData*> m; // мап с ключем-хешем
+	map<size_t, unique_ptr<BtsData>> m; // мап с ключем-хешем
 
 	// добавление в мап с инкрементацией
 	// счетчика, если уже добавлено
@@ -39,10 +40,8 @@ int main()
 		auto x = m.find(h);
 		if (x != m.end())
 			x->second->count++;
-		else {
-			auto d = new BtsData{s, 1, 0};
-			m.emplace(h, d);
-		}
+		else
+			m.emplace(h, unique_ptr<BtsData>{new BtsData{s, 1, 0}});
 	};
 
 	auto trim = [] (QString s) {
