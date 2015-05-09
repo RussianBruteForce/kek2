@@ -16,6 +16,11 @@ const auto wordToFind="нашел";
 
 // Слово и кол-во упоминаний слова
 struct BtsData {
+	BtsData() = default;
+	BtsData(QString w, int c, int d):
+	        word(w),
+	        count(c),
+	        depth(d) {}
 	QString word;
 	int count, depth;
 	// операция сравнения по кол-ву включений в текст
@@ -28,7 +33,6 @@ struct BtsData {
 
 int main()
 {
-
 	Bts<BtsData> bts; // дерево поиска
 	std::hash<string> str_hash; // функция хеширования слова
 	map<size_t, unique_ptr<BtsData>> m; // мап с ключем-хешем
@@ -41,7 +45,7 @@ int main()
 		if (x != m.end())
 			x->second->count++;
 		else
-			m.emplace(h, unique_ptr<BtsData>{new BtsData{s, 1, 0}});
+			m.emplace(h, make_unique<BtsData>(s, 1, 0));
 	};
 
 	auto trim = [] (QString s) {
