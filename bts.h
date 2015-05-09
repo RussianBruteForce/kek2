@@ -19,8 +19,9 @@ public:
 		}
 	};
 
-	Bts(): root(nullptr) {}
-	~Bts() { delete root; }
+	Bts() = default;
+	~Bts() {if (root)
+	       delete root;}
 
 	void add(T& data) {
 		add(data,root);}
@@ -48,7 +49,7 @@ private:
 		c(n->data);
 		traverse(c, n->right);
 	}
-	Node *root;
+	Node *root{nullptr};
 };
 
 #endif // BTS

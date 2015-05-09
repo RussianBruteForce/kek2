@@ -40,7 +40,7 @@ int main()
 		if (x != m.end())
 			x->second->count++;
 		else {
-			auto d = new BtsData({s, 1, 0});
+			auto d = new BtsData{s, 1, 0};
 			m.emplace(h, d);
 		}
 	};
@@ -129,7 +129,6 @@ int main()
 			if (d.word == s) {
 				qDebug() << "TREE FIND TIME ~" << QTime::currentTime().msecsTo(start) - fTime;
 				qDebug() << d.word << d.count << d.depth;
-
 			}
 		});
 	};
