@@ -124,10 +124,9 @@ int main()
 	m.find(str_hash(wordToFind));
 	qDebug() << "MAP FIND TIME ~" <<  QTime::currentTime().msecsTo(start) - fTime;
 
-
-	auto find = [&bts, &start] (QString s) -> bool {
+	auto find = [&bts, &start] (QString s) {
 		auto fTime = QTime::currentTime().msecsTo(start);
-		bts.traverse([&s, &start, &fTime](BtsData d){
+		bts.traverse([&s, &start, &fTime](BtsData d) -> bool {
 			if (d.word == s) {
 				qDebug() << "TREE FIND TIME ~" << QTime::currentTime().msecsTo(start) - fTime;
 				qDebug() << d.word << d.count << d.depth;
@@ -139,7 +138,7 @@ int main()
 
 	find(wordToFind);
 	qDebug() << "FINISH" <<  QTime::currentTime().msecsTo(start);
-	bts.add({"sdf", 0, 0});
+	bts.add({"sdf", 3000, 0});
 
 	return 0;
 }
