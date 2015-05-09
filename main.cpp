@@ -27,6 +27,7 @@ struct BtsData {
 
 int main()
 {
+
 	Bts<BtsData> bts; // дерево поиска
 	std::hash<string> str_hash; // функция хеширования слова
 	map<size_t, BtsData*> m; // мап с ключем-хешем
@@ -86,9 +87,9 @@ int main()
 
 	auto start = QTime::currentTime();
 	qDebug() << "Opening file..." << start;
-	QFile textfile("w2");
+	QFile textfile{"w2"};
 	textfile.open(QIODevice::ReadOnly | QIODevice::Text);
-	QTextStream text(&textfile);
+	QTextStream text{&textfile};
 
 	QString word;
 
@@ -109,7 +110,7 @@ int main()
 //		qDebug() << " [" << x.first <<
 //		        ':' << x.second->word <<
 //		        ", " << x.second->count << ']';
-		BtsData d = *x.second;
+		auto d = *x.second;
 		bts.add(d);
 	}
 
