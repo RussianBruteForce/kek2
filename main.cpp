@@ -11,6 +11,8 @@
 
 using namespace std;
 
+const auto wordToFind="нашел";
+
 // Слово и кол-во упоминаний слова
 struct BtsData {
 	QString word;
@@ -115,23 +117,23 @@ int main()
 	//	qDebug() << d.word << d.count << d.depth;
 	//});
 
-	qDebug() << "MAP FIND" <<  QTime::currentTime().msecsTo(start);
-	m.find(str_hash("у"));
-	qDebug() << "MAP FIND DNE" <<  QTime::currentTime().msecsTo(start);
+	auto fTime = QTime::currentTime().msecsTo(start);
+	m.find(str_hash(wordToFind));
+	qDebug() << "MAP FIND TIME ~" <<  QTime::currentTime().msecsTo(start) - fTime;
 
 
 	auto find = [&bts, &start] (QString s) {
-		qDebug() << "finding..." << QTime::currentTime().msecsTo(start);
-		bts.traverse([&s, &start](BtsData d){
+		auto fTime = QTime::currentTime().msecsTo(start);
+		bts.traverse([&s, &start, &fTime](BtsData d){
 			if (d.word == s) {
-				qDebug() << "finded" <<  QTime::currentTime().msecsTo(start);
+				qDebug() << "TREE FIND TIME ~" << QTime::currentTime().msecsTo(start) - fTime;
 				qDebug() << d.word << d.count << d.depth;
 
 			}
 		});
 	};
 
-	find("у");
+	find(wordToFind);
 	qDebug() << "FINISH" <<  QTime::currentTime().msecsTo(start);
 
 	return 0;
