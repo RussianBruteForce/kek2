@@ -125,13 +125,15 @@ int main()
 	qDebug() << "MAP FIND TIME ~" <<  QTime::currentTime().msecsTo(start) - fTime;
 
 
-	auto find = [&bts, &start] (QString s) {
+	auto find = [&bts, &start] (QString s) -> bool {
 		auto fTime = QTime::currentTime().msecsTo(start);
 		bts.traverse([&s, &start, &fTime](BtsData d){
 			if (d.word == s) {
 				qDebug() << "TREE FIND TIME ~" << QTime::currentTime().msecsTo(start) - fTime;
 				qDebug() << d.word << d.count << d.depth;
+				return true;
 			}
+			return false;
 		});
 	};
 

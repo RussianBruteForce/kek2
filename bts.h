@@ -62,7 +62,8 @@ private:
 		if (!n)
 			return;
 		traverse(c, n->left);
-		c(n->data);
+		if (c(n->data))
+			return;
 		traverse(c, n->right);
 	}
 	Node *root{nullptr};
