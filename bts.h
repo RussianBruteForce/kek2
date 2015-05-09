@@ -53,10 +53,10 @@ private:
 			n->left = n->right = nullptr;
 		} else if (n->data < data) {
 			data.deep();
-			add(data, n->left);
+			add(std::move(data), n->left);
 		} else {
 			data.deep();
-			add(data, n->right);
+			add(std::move(data), n->right);
 		}
 	}
 
