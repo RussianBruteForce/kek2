@@ -109,12 +109,11 @@ int main()
 
 
 	qDebug() << "To BTS" <<  QTime::currentTime().msecsTo(start);
-	for (auto& x: m) {
+	for (auto&x: m) {
 //		qDebug() << " [" << x.first <<
 //		        ':' << x.second->word <<
 //		        ", " << x.second->count << ']';
-		auto d = *x.second;
-		bts.add(d);
+		bts.add(*x.second);
 	}
 
 	//bts.traverse([](BtsData d){

@@ -25,6 +25,11 @@ public:
 
 	void add(T& data) {
 		add(data,root);}
+	/*
+	 * Adding by rvalue is not used in this example project
+	 */
+	void add(T&& data) {
+		add(std::move(data),root);}
 	void traverse(auto c) { traverse(c,root);}
 
 private:
@@ -32,6 +37,19 @@ private:
 		if (n == nullptr) {
 			n = new Node;
 			n->data = data;
+			n->left = n->right = nullptr;
+		} else if (n->data < data) {
+			data.deep();
+			add(data, n->left);
+		} else {
+			data.deep();
+			add(data, n->right);
+		}
+	}
+	void add(T&& data, Node *&n) {
+		if (n == nullptr) {
+			n = new Node;
+			n->data = std::move(data);
 			n->left = n->right = nullptr;
 		} else if (n->data < data) {
 			data.deep();
