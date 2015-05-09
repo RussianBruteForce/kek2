@@ -97,14 +97,14 @@ int main()
 	QString word;
 
 	qDebug() << "Loading file to map..." <<  QTime::currentTime().msecsTo(start);
-	do {
+	while (!text.atEnd()) {
 		text >> word;
 		word = trim(word.toLower());
 
 		if (word.size() == 0)
 			continue;
 		add_to_map(word);
-	} while (!text.atEnd());
+	}
 	textfile.close();
 
 
