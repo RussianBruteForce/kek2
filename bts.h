@@ -24,7 +24,7 @@ public:
 
 	void add(T& data) {
 		add(data,root);}
-	void traverse(std::function<void (T)> c) { traverse(c,root);}
+	void traverse(auto c) { traverse(c,root);}
 
 private:
 	void add(T& data, Node *&n) {
@@ -41,7 +41,7 @@ private:
 		}
 	}
 
-	void traverse(std::function<void (T)> c, Node* n) {
+	void traverse(auto c, Node* n) {
 		if (!n)
 			return;
 		traverse(c, n->left);

@@ -44,7 +44,7 @@ int main()
 
 	auto trim = [] (QString s) {
 		for (auto &x: s) {
-			if (
+			/*if (
 			                x == QChar('a') ||
 			                x == QChar('b') ||
 			                x == QChar('c') ||
@@ -74,7 +74,7 @@ int main()
 			                ) {
 				s.clear();
 				return QString();
-			} else if (x.category() != QChar::Letter_Lowercase)
+			} else */if (x.category() != QChar::Letter_Lowercase)
 				x = ' ';
 
 		}
@@ -115,6 +115,11 @@ int main()
 	//	qDebug() << d.word << d.count << d.depth;
 	//});
 
+	qDebug() << "MAP FIND" <<  QTime::currentTime().msecsTo(start);
+	m.find(str_hash("у"));
+	qDebug() << "MAP FIND DNE" <<  QTime::currentTime().msecsTo(start);
+
+
 	auto find = [&bts, &start] (QString s) {
 		qDebug() << "finding..." << QTime::currentTime().msecsTo(start);
 		bts.traverse([&s, &start](BtsData d){
@@ -126,7 +131,7 @@ int main()
 		});
 	};
 
-	find("мама");
+	find("у");
 	qDebug() << "FINISH" <<  QTime::currentTime().msecsTo(start);
 
 	return 0;
