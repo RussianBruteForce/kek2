@@ -13,9 +13,19 @@
 
 using namespace std;
 
+/*
+ * Слово, которое будем искать… просто так
+ */
 constexpr auto wordToFind="глаз";
+/*
+ * Имя файла с текстом
+ */
 constexpr auto textFileName="w";
 
+
+/*
+ * Выявитель типов… Не важно…
+ */
 #ifndef QT_NO_DEBUG
 template<typename T>
 class TD;
@@ -51,10 +61,13 @@ struct BtsData {
 int main()
 {
 	Bts<BtsData> bts; // дерево поиска
-	ThreadedBts<BtsData> tbts;
+	ThreadedBts<BtsData> tbts; // прошитое дерево поиска
 	hash<string> str_hash; // функция хеширования слова
 	map<size_t, unique_ptr<BtsData>> m; // мап с ключем-хешем
 
+	/*
+	 * Считатель слов в файле, считает все подряд)
+	 */
 	auto countWords = [](const QString &file){
 		QFile f(file);
 		f.open(QIODevice::ReadOnly);
@@ -79,9 +92,25 @@ int main()
 		return false;
 	};
 
+	/*
+	 * Обрезатль слова от всякой ненужной дряни
+	 * типа знаков препинания, пробелов и пр.
+	 * Также детектор иностранных слов и их удалятор
+	 */
 	auto trim = [] (QString&& s) {
 		for (auto &x: s) {
 			if (
+//			                Б
+//			                Е
+//			                Л
+//			                И
+//			                М
+//
+//			                М
+//			                Р
+//			                А
+//			                З
+//			                Б
 			                x == QChar('a') ||
 			                x == QChar('b') ||
 			                x == QChar('c') ||
@@ -123,6 +152,9 @@ int main()
 	qDebug() << "Reading file..." << QTime::currentTime().msecsTo(start);
 	QFile textfile{textFileName};
 	textfile.open(QIODevice::ReadOnly | QIODevice::Text);
+	/*
+	 * Копирем файл в память
+	 */
 	auto data = textfile.readAll();
 	textfile.close();
 	QTextStream text{data};
