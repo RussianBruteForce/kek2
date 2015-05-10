@@ -9,10 +9,12 @@
 #include <map>
 #include <memory>
 #include "bts.h"
+#include "threadedbts.h"
 
 using namespace std;
 
-constexpr auto wordToFind="нашел";
+constexpr auto wordToFind="глаз";
+constexpr auto textFileName="w";
 
 #ifndef QT_NO_DEBUG
 template<typename T>
@@ -23,6 +25,11 @@ class TD;
 struct BtsData {
 	using int_type = std::uint_fast32_t;
 	BtsData() = default;
+	~BtsData() = default;
+	BtsData(BtsData&&) = default;
+	BtsData& operator=(BtsData&&) = default;
+	BtsData(const BtsData&) = default;
+	BtsData& operator=(const BtsData&) = default;
 	BtsData(QString&& w, int_type c = 1):
 	        word(std::move(w)),
 	        count(c){
@@ -44,18 +51,32 @@ struct BtsData {
 int main()
 {
 	Bts<BtsData> bts; // дерево поиска
+	ThreadedBts<BtsData> tbts;
 	hash<string> str_hash; // функция хеширования слова
 	map<size_t, unique_ptr<BtsData>> m; // мап с ключем-хешем
 
+	auto countWords = [](const QString &file){
+		QFile f(file);
+		f.open(QIODevice::ReadOnly);
+		QTextStream textStream(&f);
+		size_t count = 0;
+
+		while (textStream.atEnd() == false)
+			count += textStream.readLine().split(" ").size();
+
+		return count;
+	};
+
 	// добавление в мап с инкрементацией
 	// счетчика, если уже добавлено
-	auto add_to_map = [&m, &str_hash] (QString &s) {
-		auto h = str_hash(s.toStdString());
+	auto add_to_map = [&m, &str_hash] (BtsData &d) {
+		auto h = str_hash(d.word.toStdString());
 		auto x = m.find(h);
 		if (x != m.cend())
 			x->second->count++;
 		else
-			m.emplace(h, make_unique<BtsData>(s));
+			m.emplace(h, make_unique<BtsData>(d));
+		return false;
 	};
 
 	auto trim = [] (QString&& s) {
@@ -97,28 +118,38 @@ int main()
 	};
 
 	auto start = QTime::currentTime();
-	qDebug() << "Opening file..." << start;
-	QFile textfile{"w2"};
+	qDebug() << "Counting words..." << start;
+	qDebug() << "in" << textFileName << "less than" << countWords(textFileName) << "words (both russian and not)";
+	qDebug() << "Reading file..." << QTime::currentTime().msecsTo(start);
+	QFile textfile{textFileName};
 	textfile.open(QIODevice::ReadOnly | QIODevice::Text);
-	QTextStream text{&textfile};
+	auto data = textfile.readAll();
+	textfile.close();
+	QTextStream text{data};
 
 	QString word;
 
-	qDebug() << "Loading file to map..." <<  QTime::currentTime().msecsTo(start);
+	qDebug() << "Loading file to threaded bts..." <<  QTime::currentTime().msecsTo(start);
 	while (!text.atEnd()) {
 		text >> word;
 		word = trim(word.toLower());
 
 		if (word.size() == 0)
 			continue;
-		add_to_map(word);
+		tbts.add(word);
 	}
-	textfile.close();
+	qDebug() << "Done, tbts size:" << tbts.size();
+
+	qDebug() << "Copying to map..." <<  QTime::currentTime().msecsTo(start);
+	tbts.traverse(add_to_map);
+
+	qDebug() << "Done, map size:" << m.size();
 
 	qDebug() << "To BTS" <<  QTime::currentTime().msecsTo(start);
 	for (auto&x: m) {
 		bts.add(*x.second);
 	}
+	qDebug() << "Done, bts size:" << bts.size();
 
 	auto fTime = QTime::currentTime().msecsTo(start);
 	m.find(str_hash(wordToFind));
@@ -138,7 +169,7 @@ int main()
 
 	find(wordToFind);
 	qDebug() << "FINISH" <<  QTime::currentTime().msecsTo(start);
-	bts.add({"sdf", 3000});
+	//bts.add({"sdf", 3000});
 
 	return 0;
 }

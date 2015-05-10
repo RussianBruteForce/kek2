@@ -1,40 +1,42 @@
 #ifndef BTS
 #define BTS
 
-#include <iostream>
 #include <functional>
 #include <QDebug>
 
+template<typename T>
+struct BtsNode {
+	BtsNode() = default;
+	BtsNode(T&& data):
+	        data(std::move(data)) {}
+	T data;
+	BtsNode *left{nullptr}, *right{nullptr};
+	~BtsNode() noexcept {
+		if (left)
+			delete left;
+		if (right)
+			delete right;
+	}
+};
+
 template<class T>
 class Bts {
-
+	using Node = BtsNode<T>;
 public:
-	struct Node {
-		Node() = default;
-		Node(T&& data):
-		        data(std::move(data)) {}
-		T data;
-		Node *left{nullptr}, *right{nullptr};
-		~Node() {
-			if (left)
-				delete left;
-			if (right)
-				delete right;
-		}
-	};
-
-	Bts() = default;
+	explicit Bts() = default;
+	Bts(Bts&&) = delete;
+	Bts& operator=(Bts&&) = delete;
 	~Bts() {if (root)
 	       delete root;}
 
-	void add(T& data) {
+	virtual void add(T& data) {
+		inc();
 		add(data,root);}
-	/*
-	 * Adding by rvalue is not used in this example project
-	 */
-	void add(T&& data) {
+	virtual void add(T&& data) {
+		inc();
 		add(std::move(data),root);}
-	void traverse(auto c) { traverse(c,root);}
+	void traverse(auto c) const { traverse(c,root);}
+	auto size() {return _size;}
 
 private:
 	void add(T& data, Node *&n) {
@@ -50,7 +52,6 @@ private:
 		}
 	}
 	void add(T&& data, Node *&n) {
-		qDebug() << "rhv";
 		if (n == nullptr) {
 			n = new Node{std::move(data)};
 		} else if (n->data < data) {
@@ -62,7 +63,7 @@ private:
 		}
 	}
 
-	bool traverse(auto& c, Node* n) {
+	bool traverse(auto& c, Node* n) const {
 		if (!n)
 			return false;
 		if (
@@ -73,6 +74,9 @@ private:
 		return false;
 	}
 	Node *root{nullptr};
+protected:
+	void inc() {_size++;}
+	std::size_t _size{0};
 };
 
 #endif // BTS

@@ -11,5 +11,6 @@ include(deployment.pri)
 qtcAddDeployment()
 
 HEADERS += \
-    bts.h
+    bts.h \
+    threadedbts.h
 
