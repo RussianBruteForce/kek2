@@ -3,12 +3,16 @@
 
 #include <iostream>
 #include <functional>
+#include <QDebug>
 
 template<class T>
 class Bts {
 
 public:
 	struct Node {
+		Node() = default;
+		Node(T&& data):
+		        data(std::move(data)) {}
 		T data;
 		Node *left{nullptr}, *right{nullptr};
 		~Node() {
@@ -46,9 +50,9 @@ private:
 		}
 	}
 	void add(T&& data, Node *&n) {
+		qDebug() << "rhv";
 		if (n == nullptr) {
-			n = new Node{};
-			n->data = std::move(data);
+			n = new Node{std::move(data)};
 		} else if (n->data < data) {
 			data.deep();
 			add(std::move(data), n->left);
@@ -58,13 +62,15 @@ private:
 		}
 	}
 
-	void traverse(auto c, Node* n) {
+	bool traverse(auto& c, Node* n) {
 		if (!n)
-			return;
-		traverse(c, n->left);
-		if (c(n->data))
-			return;
-		traverse(c, n->right);
+			return false;
+		if (
+		                traverse(c, n->left) ||
+		                c(n->data) ||
+		                traverse(c, n->right))
+			return true;
+		return false;
 	}
 	Node *root{nullptr};
 };

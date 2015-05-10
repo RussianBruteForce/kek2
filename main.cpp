@@ -12,17 +12,27 @@
 
 using namespace std;
 
-const auto wordToFind="нашел";
+constexpr auto wordToFind="нашел";
+
+#ifndef QT_NO_DEBUG
+template<typename T>
+class TD;
+#endif
 
 // Слово и кол-во упоминаний слова
 struct BtsData {
+	using int_type = std::uint_fast32_t;
 	BtsData() = default;
-	BtsData(QString w, int c, int d):
+	BtsData(QString&& w, int_type c = 1):
+	        word(std::move(w)),
+	        count(c){
+		qDebug() << "by rv" << word;
+	}
+	BtsData(QString& w, int_type c = 1):
 	        word(w),
-	        count(c),
-	        depth(d) {}
+	        count(c){}
 	QString word;
-	int count, depth;
+	int_type count, depth{0};
 	// операция сравнения по кол-ву включений в текст
 	friend inline bool operator< (const BtsData& lhs, const BtsData& rhs){
 		return ( lhs.count < rhs.count) ? true: false;
@@ -34,7 +44,7 @@ struct BtsData {
 int main()
 {
 	Bts<BtsData> bts; // дерево поиска
-	std::hash<string> str_hash; // функция хеширования слова
+	hash<string> str_hash; // функция хеширования слова
 	map<size_t, unique_ptr<BtsData>> m; // мап с ключем-хешем
 
 	// добавление в мап с инкрементацией
@@ -42,15 +52,15 @@ int main()
 	auto add_to_map = [&m, &str_hash] (QString &s) {
 		auto h = str_hash(s.toStdString());
 		auto x = m.find(h);
-		if (x != m.end())
+		if (x != m.cend())
 			x->second->count++;
 		else
-			m.emplace(h, make_unique<BtsData>(s, 1, 0));
+			m.emplace(h, make_unique<BtsData>(s));
 	};
 
-	auto trim = [] (QString s) {
+	auto trim = [] (QString&& s) {
 		for (auto &x: s) {
-			/*if (
+			if (
 			                x == QChar('a') ||
 			                x == QChar('b') ||
 			                x == QChar('c') ||
@@ -77,16 +87,14 @@ int main()
 			                x == QChar('x') ||
 			                x == QChar('y') ||
 			                x == QChar('z')
-			                ) {
-				s.clear();
+			                )
 				return QString();
-			} else */if (x.category() != QChar::Letter_Lowercase)
+			else if (x.category() != QChar::Letter_Lowercase)
 				x = ' ';
-
 		}
+		//TD<decltype(s)> sd;
 		return s.trimmed();
 	};
-
 
 	auto start = QTime::currentTime();
 	qDebug() << "Opening file..." << start;
@@ -107,18 +115,10 @@ int main()
 	}
 	textfile.close();
 
-
 	qDebug() << "To BTS" <<  QTime::currentTime().msecsTo(start);
 	for (auto&x: m) {
-//		qDebug() << " [" << x.first <<
-//		        ':' << x.second->word <<
-//		        ", " << x.second->count << ']';
 		bts.add(*x.second);
 	}
-
-	//bts.traverse([](BtsData d){
-	//	qDebug() << d.word << d.count << d.depth;
-	//});
 
 	auto fTime = QTime::currentTime().msecsTo(start);
 	m.find(str_hash(wordToFind));
@@ -138,7 +138,7 @@ int main()
 
 	find(wordToFind);
 	qDebug() << "FINISH" <<  QTime::currentTime().msecsTo(start);
-	bts.add({"sdf", 3000, 0});
+	bts.add({"sdf", 3000});
 
 	return 0;
 }
