@@ -13,7 +13,7 @@ struct NodeCRTP {
 	        data(std::move(data)) {}
 	T data;
 	D *left{nullptr}, *right{nullptr};
-	~NodeCRTP() noexcept {
+	virtual ~NodeCRTP() noexcept {
 		if (left)
 			delete left;
 		if (right)
@@ -33,8 +33,9 @@ public:
 	explicit Bts() = default;
 	Bts(Bts&&) = delete;
 	Bts& operator=(Bts&&) = delete;
-	~Bts() {if (root)
-	       delete root;}
+	virtual ~Bts() {if (root)
+	       delete root;
+	               qDebug() << "bts deleted";}
 
 	virtual void add(T& data) {
 		inc();

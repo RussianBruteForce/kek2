@@ -19,7 +19,7 @@ public:
 		root->left = root->right = root;
 	}
 
-	void add(T&& data) override {
+	virtual void add(T&& data) override {
 		Bts<T>::inc();
 		auto n = new Node;
 		n->data = std::move(data);
@@ -74,7 +74,7 @@ public:
 	/*
 	 * Not used in this example
 	 */
-	void add(T& data) override {
+	virtual void add(T& data) override {
 		qDebug() << "Adding by lvalue to tbts";
 		Bts<T>::inc();
 		auto n = new Node;
