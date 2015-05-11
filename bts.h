@@ -3,6 +3,9 @@
 
 #include <functional>
 
+/*
+ * https://www.linux.org.ru/forum/development/11597146
+ */
 template<typename T, typename D>
 struct NodeCRTP {
 	NodeCRTP() = default;
