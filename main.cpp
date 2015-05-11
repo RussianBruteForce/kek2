@@ -43,7 +43,6 @@ struct BtsData {
 	BtsData(QString&& w, int_type c = 1):
 	        word(std::move(w)),
 	        count(c){
-		qDebug() << "by rv" << word;
 	}
 	BtsData(QString& w, int_type c = 1):
 	        word(w),
@@ -201,7 +200,7 @@ int main()
 
 	find(wordToFind);
 	qDebug() << "FINISH" <<  QTime::currentTime().msecsTo(start);
-	//bts.add({"sdf", 3000});
+	bts.add({"sdf", 3000});
 
 	return 0;
 }

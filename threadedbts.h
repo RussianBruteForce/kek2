@@ -4,9 +4,9 @@
 #include "bts.h"
 
 template<typename T>
-struct ThreadedBtsNode : public BtsNode<T> {
+struct ThreadedBtsNode : NodeCRTP<T, ThreadedBtsNode<T>>{
+	using NodeCRTP<T, ThreadedBtsNode<T>>::NodeCRTP;
 	std::int_fast8_t lf{0}, rf{1};
-	ThreadedBtsNode *left{nullptr}, *right{nullptr};
 };
 
 template<typename T>

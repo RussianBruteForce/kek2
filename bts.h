@@ -2,21 +2,25 @@
 #define BTS
 
 #include <functional>
-#include <QDebug>
 
-template<typename T>
-struct BtsNode {
-	BtsNode() = default;
-	BtsNode(T&& data):
+template<typename T, typename D>
+struct NodeCRTP {
+	NodeCRTP() = default;
+	NodeCRTP(T&& data):
 	        data(std::move(data)) {}
 	T data;
-	BtsNode *left{nullptr}, *right{nullptr};
-	~BtsNode() noexcept {
+	D *left{nullptr}, *right{nullptr};
+	~NodeCRTP() noexcept {
 		if (left)
 			delete left;
 		if (right)
 			delete right;
 	}
+};
+
+template<typename T>
+struct BtsNode : NodeCRTP<T, BtsNode<T>> {
+	using NodeCRTP<T, BtsNode<T>>::NodeCRTP;
 };
 
 template<class T>
