@@ -124,7 +124,7 @@ int main()
 			                x == QChar('l') ||
 			                x == QChar('m') ||
 			                x == QChar('n') ||
-			                x == QChar('p') ||
+			                x == QChar('o') ||
 			                x == QChar('p') ||
 			                x == QChar('q') ||
 			                x == QChar('r') ||
