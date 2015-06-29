@@ -1,3 +1,5 @@
+// Подробности https://www.linux.org.ru/forum/development/11602363
+
 #include <QDebug>
 #include <QString>
 #include <QFile>
