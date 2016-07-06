@@ -1,10 +1,17 @@
 # kek2
+
 Гайд о том, как иметь 52% миссов L1
-https://www.linux.org.ru/forum/development/11602363
+
+(LOR)[https://www.linux.org.ru/forum/development/11602363]
+
 # Disclaimer
+
 You don't want to see those files. RUSSIAN ONLY.
+
 # But…
+
 Maybe you will want to use realisations of Binary Search Tree (BTS) or Threaded BTS. Feel free to do so.
+
 # License
                           DWTFYWWI LICENSE
                        Version 1, January 2006
